@@ -5,6 +5,14 @@
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "dyanamic-mat-table-library": [
+        "dist/dyanamic-mat-table-library"
+      ],
+      "dynamic-mat-table": [
+        "dist/dynamic-mat-table"
+      ]
+    },
     "strict": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
