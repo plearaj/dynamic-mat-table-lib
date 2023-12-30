@@ -32,8 +32,8 @@ export class DynamicMatTableActionOptions {
   readonly menuIconColor: 'default' | 'primary' | 'accent' | 'warn' | 'emphasis' | 'error' | 'success' | 'info' = 'default';
   constructor(
     actionOption: DynamicMatTableSingleAction | DynamicMatTableMenuAction | VariableActionFn | 'edit' | 'link' | 'dialog' | 'delete',
-    actionHeader: string = 'Action',
-    position: number
+    position: number,
+    actionHeader: string = 'Action'
   ) {
     this.actionHeader = actionHeader;
     this.position = position;

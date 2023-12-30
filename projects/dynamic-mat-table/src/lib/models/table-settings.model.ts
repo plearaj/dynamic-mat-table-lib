@@ -21,7 +21,9 @@ import {
 } from "./dynamic-mat-table-data-interaction-settings/dynamic-mat-table-save-settings/save-data-fn.model";
 import {DynamicMatTableButton, DynamicMatTableLabeledButton} from "./dynamic-mat-table-button.model";
 
+
 export class TableSettings {
+  //</editor-fold>
   readonly tableColumns: DynamicMatTableColumn[];
   readonly columnDef: string[] = [];
   readonly filters: string[] = [];
@@ -61,6 +63,13 @@ export class TableSettings {
   readonly saveMethod: 'pass-data' | 'function';
   readonly saveDataFn?: SaveDataFnElement | SaveDataFnElements;
   readonly saveButton: DynamicMatTableButton | DynamicMatTableLabeledButton;
+  /**
+   * @param {ITableColumn[]} columns - The columns to display in the table.
+   * @param {DynamicMatTableFilter} filterSettings - Filter settings for the table.
+   * @param {DynamicMatTablePaginator} paginatorSettings - Paginator settings for the table.
+   * @param {DynamicMatTableSelection} selectionSettings - Row selection settings for the table.
+   * @param {DynamicMatTableActionSettings} tableActionSettings -
+   * */
   constructor(
     columns: ITableColumn[], filterSettings: DynamicMatTableFilter, paginatorSettings: DynamicMatTablePaginator,
     selectionSettings: DynamicMatTableSelection, tableActionSettings: DynamicMatTableActionSettings, readonly tableName: string,
