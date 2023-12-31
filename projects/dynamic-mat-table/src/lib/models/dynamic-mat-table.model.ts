@@ -20,18 +20,15 @@ export interface ITableColumn {
   columnDataType: 'string' | 'date' | 'dateRange' | 'dateString' | 'number' | 'boolean' | 'action' | 'select' | 'hyperlink' | 'routerLink' | 'routerLinkCell' | 'dialog' | 'dialogCell' | 'dialogIcon' | 'dialogForm' | 'dialogFormIcon' | 'clickableCell' | 'drag' | 'object' | 'variableUrl';
   sortable: boolean;
   filterable: boolean;
-  filterName?: string;
-  filterFormControl?: FormControl;
   editable: boolean;
   formField: any;
   isLink: boolean;
-  formGroup?: FormGroup;
   colClass?: Record<string, boolean>;
   cellClass?: (element: any) => string | WritableSignal<string> | Signal<string>;
   url?: (element: any) => string | WritableSignal<string> | Signal<string>;
   dialog?: Dialog;
   allowMassUpdate: boolean;
-  objectPropToDisplay?: string;
+  objectValueToDisplay?: (element: any) => any | WritableSignal<any> | Signal<any>;
 }
 
 export interface Dialog {
