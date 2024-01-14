@@ -33,9 +33,9 @@ export const LibConfigService = new InjectionToken<LibConfig>('LibConfig');
     MatSortModule
   ],
   exports: [
-    DynamicMatTablePage,
-    MatPaginatorModule,
-    MatTableModule
+    DynamicMatTablePage
+    // MatPaginatorModule,
+    // MatTableModule
   ]
 })
 export class DynamicMatTableModule {

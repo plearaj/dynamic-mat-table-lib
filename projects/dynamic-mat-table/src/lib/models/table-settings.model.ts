@@ -69,6 +69,10 @@ export class TableSettings {
    * @param {DynamicMatTablePaginator} paginatorSettings - Paginator settings for the table.
    * @param {DynamicMatTableSelection} selectionSettings - Row selection settings for the table.
    * @param {DynamicMatTableActionSettings} tableActionSettings -
+   * @param tableName
+   * @param dataInteractionSettings
+   * @param allowDragAndDrop
+   * @param noRecordMessage
    * */
   constructor(
     columns: ITableColumn[], filterSettings: DynamicMatTableFilter, paginatorSettings: DynamicMatTablePaginator,
@@ -130,8 +134,8 @@ export class TableSettings {
       let tableColumn = column;
       this.columnDef.push(column.columnDataName);
       if (filterType === 'column') {
-        tableColumn.filterName = column.columnDataName + 'Filter';
-        this.filters.push(tableColumn.filterName);
+        const filterName = column.columnDataName + 'Filter';
+        this.filters.push(filterName);
         if (column.filterable) {
           let filterFormControl: FormGroup | FormControl;
           if (column.columnDataType === 'dateRange') {
@@ -142,7 +146,7 @@ export class TableSettings {
           } else {
             filterFormControl = this.createFormControl(null, false);
           }
-          this.filterFormGroup.addControl(tableColumn.filterName as string, filterFormControl);
+          this.filterFormGroup.addControl(filterName as string, filterFormControl);
         }
       }
       return new DynamicMatTableColumn(tableColumn);
@@ -165,7 +169,6 @@ export class TableSettings {
         columnDataType: 'action',
         sortable: false,
         filterable: false,
-        filterName,
         editable: false,
         colClass: {'action-column': true},
         allowMassUpdate: false,
@@ -188,7 +191,6 @@ export class TableSettings {
         columnDataType: 'select',
         sortable: false,
         filterable: false,
-        filterName,
         editable: false,
         colClass: {'selection-column': true},
         allowMassUpdate: false,
@@ -211,7 +213,6 @@ export class TableSettings {
         columnDataType: 'drag',
         sortable: false,
         filterable: false,
-        filterName,
         editable: false,
         allowMassUpdate: false,
         formField: undefined,

@@ -1,7 +1,12 @@
 import {NewDataItem, NewDataItemFnAnon, NewDataItemFnElement, NewDataItemFnParams} from "./new-data-item.model";
 import {DynamicMatTableButton, DynamicMatTableLabeledButton} from "../../dynamic-mat-table-button.model";
 
-export type DynamicMatTableAddByRouting = 'routing';
+export class DynamicMatTableAddByRouting {
+  readonly addDataMethod = 'routing';
+  constructor(readonly route: string[]) {
+    this.route = route;
+  }
+}
 export class DynamicMatTableAddByNewItem {
   constructor(readonly addDataMethod: 'function' | 'dialog' | 'table', readonly newDataItem: NewDataItem | NewDataItemFnAnon | NewDataItemFnParams | NewDataItemFnElement) {
     this.addDataMethod = addDataMethod;
@@ -11,17 +16,17 @@ export class DynamicMatTableAddByNewItem {
 export class DynamicMatTableDataAddOptions {
   readonly addDataMethod: 'routing' | 'dialog' | 'table' | 'function';
   readonly newDataItem?: NewDataItem | NewDataItemFnAnon | NewDataItemFnParams | NewDataItemFnElement;
-
+  readonly addRoute: string[] = [];
   constructor(
     readonly notifyOfAddBy: 'subscription' | 'event',
     addBy: DynamicMatTableAddByRouting | DynamicMatTableAddByNewItem,
     readonly addButton?: DynamicMatTableButton | DynamicMatTableLabeledButton
   ) {
     this.notifyOfAddBy = notifyOfAddBy;
-    if (typeof addBy === 'string') {
-      this.addDataMethod = addBy;
+    this.addDataMethod = addBy.addDataMethod;
+    if (addBy instanceof DynamicMatTableAddByRouting) {
+      this.addRoute = addBy.route;
     } else {
-      this.addDataMethod = addBy.addDataMethod;
       this.newDataItem = addBy.newDataItem;
     }
 
@@ -33,6 +38,7 @@ export class DynamicMatTableDataAddSettings {
   readonly addDataMethod: 'routing' | 'dialog' | 'na' | 'table' | 'function' = 'na';
   readonly newDataItem?: NewDataItem | NewDataItemFnAnon | NewDataItemFnParams | NewDataItemFnElement;
   readonly addButton: DynamicMatTableButton | DynamicMatTableLabeledButton = new DynamicMatTableButton('Add');
+  readonly addRoute: string[] = [];
   constructor(allowAddData: false)
   constructor(allowAddData: true, addDataOptions: DynamicMatTableDataAddOptions)
   constructor(readonly allowAddData: boolean, addDataOptions?: DynamicMatTableDataAddOptions) {
@@ -42,6 +48,7 @@ export class DynamicMatTableDataAddSettings {
       this.addDataMethod = addDataOptions.addDataMethod;
       if (addDataOptions.newDataItem) this.newDataItem = addDataOptions.newDataItem;
       if (addDataOptions.addButton) this.addButton = addDataOptions.addButton;
+      if (addDataOptions.addRoute) this.addRoute = addDataOptions.addRoute;
     }
   }
 }

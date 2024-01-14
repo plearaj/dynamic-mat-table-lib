@@ -21,7 +21,7 @@ export interface ITableColumn {
   sortable: boolean;
   filterable: boolean;
   editable: boolean;
-  formField: any;
+  formField?: any;
   isLink: boolean;
   colClass?: Record<string, boolean>;
   cellClass?: (element: any) => string | WritableSignal<string> | Signal<string>;

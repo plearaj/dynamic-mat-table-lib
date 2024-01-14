@@ -1,5 +1,5 @@
 import {Component, computed, EventEmitter, OnDestroy, OnInit, Output, Signal, signal, ViewChild} from '@angular/core';
-import {FormControl, FormGroup} from "@angular/forms";
+import {FormArray, FormControl, FormGroup} from "@angular/forms";
 import {MatTableDataSource} from "@angular/material/table";
 import {DynamicMatTableService} from "./dynamic-mat-table.service";
 import {Subscription} from "rxjs";
@@ -9,6 +9,7 @@ import {PaginatorSettings} from "./models/paginator-settings.model";
 import {SelectionModel} from "@angular/cdk/collections";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'htt-dynamic-mat-table',
@@ -49,8 +50,12 @@ export class DynamicMatTablePage implements OnInit, OnDestroy {
   lastChecked!: number;
   //Drag and Drop Variables:
   disableDragAndDrop = true;
+  talbeFormArray = new FormArray([]);
+  tableFormGroup = new FormGroup({
+    talbeFormArray: this.talbeFormArray
+  });
 
-  constructor(private dynamicMatTableService: DynamicMatTableService) { }
+  constructor(private dynamicMatTableService: DynamicMatTableService, private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit() {
     this.tableSettingsSubscription = this.dynamicMatTableService.tableSetting$.subscribe(tableSettings => {
@@ -59,6 +64,7 @@ export class DynamicMatTablePage implements OnInit, OnDestroy {
         this.tableSettingsLoaded.set(true);
         //Set Columns:
         this.displayedColumns.set(tableSettings.tableColumns);
+        this.columns.set(tableSettings.tableColumns.map(column => column.columnDataName()))
 
         //Sets Filter Settings:
         if (tableSettings.showFilter) {
@@ -188,6 +194,25 @@ export class DynamicMatTablePage implements OnInit, OnDestroy {
 
     }
     return signal<string>(cellType);
+  }
+
+  addData() {
+    let newDataItem: any
+    if (this.tableSettings.addDataMethod === 'table' || this.tableSettings.addDataMethod === 'function') {
+      if (this.tableSettings.newDataItem && typeof this.tableSettings.newDataItem === 'function') {
+        newDataItem = this.tableSettings.newDataItem();
+      } else {
+        newDataItem = this.tableSettings.newDataItem;
+      }
+      this.datasource.update((datasource) => {
+        datasource.data.push(newDataItem);
+        return datasource;
+      });
+    } else if (this.tableSettings.addDataMethod === 'routing') {
+      this.router.navigate([], {relativeTo: this.route});
+    } else {
+
+    }
   }
 
   ngOnDestroy() {

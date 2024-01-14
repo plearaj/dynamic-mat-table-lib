@@ -12,7 +12,7 @@ export class DynamicMatTableDataDeleteOptions {
 }
 export class DynamicMatTableDeleteSettings {
   readonly notifyOfDeleteBy: 'subscription' | 'event' = 'event';
-  readonly deleteButton: DynamicMatTableButton | DynamicMatTableLabeledButton = new DynamicMatTableButton('Delete')
+  readonly deleteButton: DynamicMatTableButton | DynamicMatTableLabeledButton = new DynamicMatTableButton('Delete');
   constructor(allowDeleteData: false)
   constructor(allowDeleteData: true, deleteDataOptions: DynamicMatTableDataDeleteOptions)
   constructor(readonly allowDeleteData: boolean, deleteDataOptions?: DynamicMatTableDataDeleteOptions) {

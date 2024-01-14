@@ -19,7 +19,7 @@ export class DynamicMatTableColumn {
   readonly url?: (element: any) => string  | WritableSignal<string> | Signal<string>;
   readonly dialog?: Dialog;
   readonly allowMassUpdate: boolean;
-  objectPropToDisplay?: string;
+  objectValueToDisplay?: (element: any) => any | WritableSignal<any> | Signal<any>;
 
   constructor(column: ITableColumn) {
     this.columnHeader = signal(column.columnHeader);
@@ -41,7 +41,7 @@ export class DynamicMatTableColumn {
     this.url = column.url;
     this.dialog = column.dialog;
     this.allowMassUpdate = column.allowMassUpdate;
-    this.objectPropToDisplay = column.objectPropToDisplay;
+    this.objectValueToDisplay = column.objectValueToDisplay;
     // let cellType = 'simple';
     // switch (column.columnDataType) {
     //   case "action":

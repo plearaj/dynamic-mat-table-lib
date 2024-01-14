@@ -15,3 +15,5 @@ export * from './lib/models/dynamic-mat-table-data-interaction-settings/dynamic-
 export * from './lib/models/dynamic-mat-table-data-interaction-settings/dynamic-mat-table-save-settings/save-data-fn.model';
 export * from './lib/models/dynamic-mat-table-filter.model';
 export * from './lib/models/dynamic-mat-table-action-settings.model';
+export * from './lib/models/dynamic-mat-table-selection.model';
+export * from './lib/models/paginator-settings.model';

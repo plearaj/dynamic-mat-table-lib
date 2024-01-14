@@ -1,12 +1,12 @@
-//Simple filter
+<!--Simple filter-->
 <ng-container *ngIf="showSimpleFilter()">
   <ion-item>
     <ion-input label="Filter" [formControl]="simpleFilterControl"></ion-input>
   </ion-item>
 </ng-container>
 
-<mat-table [dataSource]="datasource()" formArrayName="" >
-  <ng-container [matColumnDef]="column.columnDataName()" *ngFor="let column of displayedColumns(); trackBy:trackByIndex">
+<mat-table [dataSource]="datasource()" [formGroup]="tableFormGroup">
+  <ng-container [matColumnDef]="column.columnDataName()" *ngFor="let column of displayedColumns(); trackBy:trackByIndex" formArrayName="talbeFormArray">
     <!-- Selection Column Header -->
     <ng-container *ngIf="column.columnDataType() === 'select'">
       <mat-header-cell *matHeaderCellDef mat-sort-header [disabled]="!datasource().filteredData.length" class="selection-column">
@@ -81,15 +81,21 @@
     </mat-cell>
 
   </ng-container>
-  //Row definitions:
+<!--  Row definitions:-->
   <ng-template *ngIf="showColumnFilter()">
     <mat-header-row *matHeaderRowDef="filterColumns()"></mat-header-row>
   </ng-template>
   <mat-header-row *matHeaderRowDef="columns()"></mat-header-row>
   <mat-row *matRowDef="let row; columns: columns()"></mat-row>
 </mat-table>
-//Toolbar
+<!--Toolbar-->
 <mat-toolbar>
+  <ng-container *ngIf="tableSettings.allowAddData()">
+
+  </ng-container>
+  @if (tableSettings.allowAddData()) {
+    <button (click)=addData()>{{ tableSettings.addButton.buttonText }}</button>
+  }
   <ng-container *ngIf="showPaginator()">
     <mat-paginator
       [pageSize]="paginatorSettings.pageSize()" [pageSizeOptions]="pageSizeOptions()"
