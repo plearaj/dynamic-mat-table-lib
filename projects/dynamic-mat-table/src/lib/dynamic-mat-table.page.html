@@ -1,104 +1,104 @@
-<!--Simple filter-->
-<ng-container *ngIf="showSimpleFilter()">
-  <ion-item>
-    <ion-input label="Filter" [formControl]="simpleFilterControl"></ion-input>
-  </ion-item>
-</ng-container>
+<mat-card>
+  <mat-card-content>
+    <!--Simple filter-->
+    @if (showSimpleFilter()) {
+      <ion-item>
+        <ion-input label="Filter" [formControl]="simpleFilterControl"></ion-input>
+      </ion-item>
+    }
+    <mat-table [dataSource]="datasource()" [formGroup]="tableFormGroup">
+      @for (column of displayedColumns(); track column) {
+        <ng-container [matColumnDef]="column.columnDataName()" formArrayName="tableFormArray">
+          <!-- Selection Column Header -->
+          @if (column.columnDataType() === 'select') {
+            <mat-header-cell *matHeaderCellDef mat-sort-header [disabled]="!datasource().filteredData.length" class="selection-column">
+              <ion-item>
+                <ion-checkbox (change)="$event ? masterToggle() : null" [disabled]="!datasource().filteredData.length"
+                              [checked]="selection.hasValue() && isAllSelected()" (click)="$event.stopPropagation()"
+                              [indeterminate]="selection.hasValue() && !isAllSelected()"></ion-checkbox>
+              </ion-item>
+            </mat-header-cell>
+          } @else if (column.columnDataType() === 'drag') {
+            <!-- Drag And Drop Column Header -->
+            <mat-header-cell *matHeaderCellDef class="drag-column center-cell-content"></mat-header-cell>
+          } @else if (column.columnDataType() === 'action') {
+            <!-- Action Column Header -->
+            <mat-header-cell *matHeaderCellDef class="action-column">
+              {{ column.columnHeader() }}
+            </mat-header-cell>
+          } @else {
+            <!-- Regular Column Header -->
+            <mat-header-cell *matHeaderCellDef> {{ column.columnHeader() }} </mat-header-cell>
+          }
 
-<mat-table [dataSource]="datasource()" [formGroup]="tableFormGroup">
-  <ng-container [matColumnDef]="column.columnDataName()" *ngFor="let column of displayedColumns(); trackBy:trackByIndex" formArrayName="talbeFormArray">
-    <!-- Selection Column Header -->
-    <ng-container *ngIf="column.columnDataType() === 'select'">
-      <mat-header-cell *matHeaderCellDef mat-sort-header [disabled]="!datasource().filteredData.length" class="selection-column">
-        <ion-item>
-          <ion-checkbox (change)="$event ? masterToggle() : null" [disabled]="!datasource().filteredData.length"
-            [checked]="selection.hasValue() && isAllSelected()" (click)="$event.stopPropagation()"
-                        [indeterminate]="selection.hasValue() && !isAllSelected()"></ion-checkbox>
-        </ion-item>
-      </mat-header-cell>
-    </ng-container>
+          <!-- Filter Column Headers -->
+          @if (showColumnFilter()) {
+            <mat-header-cell *matHeaderCellDef [formGroup]="filterFormGroup">
+              @if (column.columnDataType() === 'date') {
+                <!-- Date Filter Column Header -->
+              } @else if (column.columnDataType() === 'dateRange') {
+                <!-- Date Range Filter Column Header -->
+              } @else {
+                <ion-input [formControlName]="column.filterName()"></ion-input>
+              }
+            </mat-header-cell>
+          }
+          <!-- Table Cells -->
 
-    <!-- Drag And Drop Column Header -->
-    <ng-container *ngIf="column.columnDataType() === 'drag'">
-      <mat-header-cell *matHeaderCellDef class="drag-column center-cell-content"></mat-header-cell>
-    </ng-container>
 
-    <!-- Action Column Header -->
-    <ng-container *ngIf="column.columnDataType() === 'action'">
-      <mat-header-cell *matHeaderCellDef class="action-column">
-        {{ column.columnHeader() }}
-      </mat-header-cell>
-    </ng-container>
-
-    <!-- Regular Column Header -->
-    <ng-container *ngIf="column.columnDataType() !== 'action' && column.columnDataType() !== 'drag' && column.columnDataType() !== 'select'">
-      <mat-header-cell *matHeaderCellDef> {{ column.columnHeader() }} </mat-header-cell>
-    </ng-container>
-
-    <!-- Filter Column Headers -->
-    <ng-container *ngIf="showColumnFilter()">
-      <mat-header-cell *matHeaderCellDef [formGroup]="filterFormGroup">
-        <!-- Date Filter Column Header -->
-        <ng-container *ngIf="column.columnDataType() === 'date'">
-
+          @if (column.columnDataType() === 'drag') {
+            <!-- Drag and Drop Cell -->
+            <mat-cell *matCellDef="let row; let i = index;" class="drag-column center-cell-content">
+              <ion-button (mousedown)="disableDragAndDrop = false">
+                <ion-icon slot="icon-only" name="reorder-three-outline"></ion-icon>
+              </ion-button>
+            </mat-cell>
+          } @else if (column.columnDataType() === 'select') {
+            <!-- Row Selection Cell -->
+            <mat-cell *matCellDef="let row; let i = index;" class="selection-column">
+              <ion-checkbox (click)="clickHandler($event, i)"></ion-checkbox>
+            </mat-cell>
+          } @else if (column.columnDataType() === 'clickableCell') {
+            <mat-cell  *matCellDef="let element">
+              {{ element[column.columnDataName()] }}
+            </mat-cell>
+          } @else {
+            <mat-cell *matCellDef="let element">
+              @if (column.columnDataType() === 'date' || column.columnDataType() === 'dateRange') {
+                {{element[column.columnDataName()] | date }}
+              } @else if (column.columnDataType() === 'object') {
+                {{ getObjectDisplayValue(column, element)() }}
+              } @else if (column.columnDataType() === 'hyperlink') {
+                <a [href]="getLink(column, element)()">{{ element[column.columnDataName()] }}</a>
+              } @else {
+                {{ element[column.columnDataName()] }}
+              }
+            </mat-cell>
+          }
         </ng-container>
+      }
+      <!--  Row definitions:-->
+      @if (showColumnFilter()) {
+        <mat-header-row *matHeaderRowDef="filterColumns()"></mat-header-row>
+      }
+      <mat-header-row *matHeaderRowDef="columns()"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: columns()"></mat-row>
+    </mat-table>
+    <!--Toolbar-->
+    <mat-toolbar class="flex-container">
+      @if (tableSettings.allowAddData()) {
+        <ion-button (click)=addData()>{{ tableSettings.addButton.buttonText }}</ion-button>
+      }
+      <span class="flex-spacer"></span>
+      @if (showPaginator()) {
+        <mat-paginator
+          [pageSize]="paginatorSettings.pageSize()" [pageSizeOptions]="pageSizeOptions()"
+          [showFirstLastButtons]="paginatorSettings.showFirstLastButtons()" [length]="length()"></mat-paginator>
+      }
+    </mat-toolbar>
+  </mat-card-content>
+</mat-card>
 
-        <!-- Date Range Filter Column Header -->
-        <ng-container *ngIf="column.columnDataType() === 'daterange'">
 
-        </ng-container>
 
-        <!-- Regular Filter Column Header -->
-        <ng-container *ngIf="column.columnDataType() !== 'date' && column.columnDataType() !== 'daterange'">
-          <ion-input [formControlName]="column.filterName()"></ion-input>
-        </ng-container>
 
-      </mat-header-cell>
-    </ng-container>
-
-    <!-- Table Cells -->
-
-    <!-- Drag and Drop Cell -->
-    <ng-container *ngIf="column.columnDataType() === 'drag'">
-      <mat-cell *matCellDef="let row; let i = index;" class="drag-column center-cell-content">
-        <ion-button (mousedown)="disableDragAndDrop = false">
-          <ion-icon slot="icon-only" name="reorder-three-outline"></ion-icon>
-        </ion-button>
-      </mat-cell>
-    </ng-container>
-
-    <!-- Row Selection Cell -->
-    <ng-container *ngIf="column.columnDataType() === 'select'">
-      <mat-cell *matCellDef="let row; let i = index;" class="selection-column">
-        <ion-checkbox (click)="clickHandler($event, i)"></ion-checkbox>
-      </mat-cell>
-    </ng-container>
-
-    <mat-cell *matCellDef="let element">
-      <ng-container>
-        {{ element[column.columnDataName()] }}
-      </ng-container>
-    </mat-cell>
-
-  </ng-container>
-<!--  Row definitions:-->
-  <ng-template *ngIf="showColumnFilter()">
-    <mat-header-row *matHeaderRowDef="filterColumns()"></mat-header-row>
-  </ng-template>
-  <mat-header-row *matHeaderRowDef="columns()"></mat-header-row>
-  <mat-row *matRowDef="let row; columns: columns()"></mat-row>
-</mat-table>
-<!--Toolbar-->
-<mat-toolbar>
-  <ng-container *ngIf="tableSettings.allowAddData()">
-
-  </ng-container>
-  @if (tableSettings.allowAddData()) {
-    <button (click)=addData()>{{ tableSettings.addButton.buttonText }}</button>
-  }
-  <ng-container *ngIf="showPaginator()">
-    <mat-paginator
-      [pageSize]="paginatorSettings.pageSize()" [pageSizeOptions]="pageSizeOptions()"
-      [showFirstLastButtons]="paginatorSettings.showFirstLastButtons()" [length]="length()"></mat-paginator>
-  </ng-container>
-</mat-toolbar>

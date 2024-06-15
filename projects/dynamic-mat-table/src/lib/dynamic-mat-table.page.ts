@@ -1,9 +1,9 @@
-import {Component, computed, EventEmitter, OnDestroy, OnInit, Output, Signal, signal, ViewChild} from '@angular/core';
+import {Component, computed, EventEmitter, OnDestroy, OnInit, Output, Signal, signal, ViewChild, WritableSignal} from '@angular/core';
 import {FormArray, FormControl, FormGroup} from "@angular/forms";
 import {MatTableDataSource} from "@angular/material/table";
 import {DynamicMatTableService} from "./dynamic-mat-table.service";
 import {Subscription} from "rxjs";
-import {DynamicMatTableColumn} from "./models/dynamict-mat-table-column.model";
+import {DynamicMatTableColumn} from "./models/dynamic-mat-table-columns/dynamict-mat-table-column.model";
 import {TableSettings} from "./models/table-settings.model";
 import {PaginatorSettings} from "./models/paginator-settings.model";
 import {SelectionModel} from "@angular/cdk/collections";
@@ -50,9 +50,9 @@ export class DynamicMatTablePage implements OnInit, OnDestroy {
   lastChecked!: number;
   //Drag and Drop Variables:
   disableDragAndDrop = true;
-  talbeFormArray = new FormArray([]);
+  tableFormArray = new FormArray([]);
   tableFormGroup = new FormGroup({
-    talbeFormArray: this.talbeFormArray
+    tableFormArray: this.tableFormArray
   });
 
   constructor(private dynamicMatTableService: DynamicMatTableService, private router: Router, private route: ActivatedRoute) { }
@@ -105,9 +105,9 @@ export class DynamicMatTablePage implements OnInit, OnDestroy {
     this.dataSubscription = this.dynamicMatTableService.dataSource$.subscribe(data => {
       if (data) {
         this.tableDataLoaded.set(true);
-        this.datasource.mutate(datasource => {
+        this.datasource.update(datasource => {
           datasource.data = data;
-          // return datasource;
+          return datasource;
         })
       } else {
         this.tableDataLoaded.set(false);
@@ -195,6 +195,13 @@ export class DynamicMatTablePage implements OnInit, OnDestroy {
     }
     return signal<string>(cellType);
   }
+  getObjectDisplayValue(column: DynamicMatTableColumn, element: any) {
+    return signal(column.objectValueToDisplay(element));
+  }
+
+  getLink(column: DynamicMatTableColumn, element: any) {
+    return signal(column.url(element));
+  }
 
   addData() {
     let newDataItem: any
@@ -209,7 +216,7 @@ export class DynamicMatTablePage implements OnInit, OnDestroy {
         return datasource;
       });
     } else if (this.tableSettings.addDataMethod === 'routing') {
-      this.router.navigate([], {relativeTo: this.route});
+      this.router.navigate(this.tableSettings.addRoute, {relativeTo: this.route});
     } else {
 
     }

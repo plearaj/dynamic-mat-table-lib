@@ -14,23 +14,6 @@ export interface DynamicTable {
   tableSettings?: TableSettings;
   preserveState: boolean;
 }
-export interface ITableColumn {
-  columnHeader: string;
-  columnDataName: string;
-  columnDataType: 'string' | 'date' | 'dateRange' | 'dateString' | 'number' | 'boolean' | 'action' | 'select' | 'hyperlink' | 'routerLink' | 'routerLinkCell' | 'dialog' | 'dialogCell' | 'dialogIcon' | 'dialogForm' | 'dialogFormIcon' | 'clickableCell' | 'drag' | 'object' | 'variableUrl';
-  sortable: boolean;
-  filterable: boolean;
-  editable: boolean;
-  formField?: any;
-  isLink: boolean;
-  colClass?: Record<string, boolean>;
-  cellClass?: (element: any) => string | WritableSignal<string> | Signal<string>;
-  url?: (element: any) => string | WritableSignal<string> | Signal<string>;
-  dialog?: Dialog;
-  allowMassUpdate: boolean;
-  objectValueToDisplay?: (element: any) => any | WritableSignal<any> | Signal<any>;
-}
-
 export interface Dialog {
   component: Component;//ComponentType<unknown>;
   config?: MatDialogConfig;

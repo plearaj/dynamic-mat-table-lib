@@ -1,0 +1,12 @@
+
+.example-container {
+  position: relative;
+}
+
+.flex-container, .flex-container > * {
+  display: flex;
+}
+
+.flex-spacer {
+  flex: 1 1 auto; /* Grow to fill available space */
+}

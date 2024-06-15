@@ -1,8 +1,7 @@
 import {SelectionModel} from "@angular/cdk/collections";
-import {ITableColumn} from "./dynamic-mat-table.model";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {signal, WritableSignal} from "@angular/core";
-import {DynamicMatTableColumn} from "./dynamict-mat-table-column.model";
+import {DynamicMatTableColumn, IDynamicMatTableColumn} from "./dynamic-mat-table-columns/dynamict-mat-table-column.model";
 import {DynamicMatTablePaginator, PaginatorSettings} from "./paginator-settings.model";
 import {DynamicMatTableFilter} from "./dynamic-mat-table-filter.model";
 import {DynamicMatTableSelection} from "./dynamic-mat-table-selection.model";
@@ -53,6 +52,7 @@ export class TableSettings {
   readonly addDataMethod: 'routing' | 'dialog' | 'na' | 'table' | 'function';
   readonly newDataItem?: NewDataItem | NewDataItemFnAnon | NewDataItemFnParams | NewDataItemFnElement;
   readonly addButton: DynamicMatTableButton | DynamicMatTableLabeledButton;
+  readonly addRoute: string[] = [];
   //Data Interaction Settings - Delete Variables:
   readonly allowDeleteData = signal<boolean>(false);
   readonly notifyOfDeleteBy: 'subscription' | 'event' = 'event';
@@ -64,7 +64,7 @@ export class TableSettings {
   readonly saveDataFn?: SaveDataFnElement | SaveDataFnElements;
   readonly saveButton: DynamicMatTableButton | DynamicMatTableLabeledButton;
   /**
-   * @param {ITableColumn[]} columns - The columns to display in the table.
+   * @param {IDynamicMatTableColumn[]} columns - The columns to display in the table.
    * @param {DynamicMatTableFilter} filterSettings - Filter settings for the table.
    * @param {DynamicMatTablePaginator} paginatorSettings - Paginator settings for the table.
    * @param {DynamicMatTableSelection} selectionSettings - Row selection settings for the table.
@@ -75,7 +75,7 @@ export class TableSettings {
    * @param noRecordMessage
    * */
   constructor(
-    columns: ITableColumn[], filterSettings: DynamicMatTableFilter, paginatorSettings: DynamicMatTablePaginator,
+    columns: IDynamicMatTableColumn[], filterSettings: DynamicMatTableFilter, paginatorSettings: DynamicMatTablePaginator,
     selectionSettings: DynamicMatTableSelection, tableActionSettings: DynamicMatTableActionSettings, readonly tableName: string,
     dataInteractionSettings: DynamicMatTableDataInteractionSettings, readonly allowDragAndDrop: boolean,
     readonly noRecordMessage: string,
@@ -89,8 +89,8 @@ export class TableSettings {
     this.selectionModel = selectionSettings.selectionModel;
     this.showActionColumn = signal(tableActionSettings.showActionColumn);
     if (this.showActionColumn()) {
-      this.createActionColumn();
       this.actionOptions = tableActionSettings.actionOptions;
+      this.createActionColumn();
     }
 
     this.tableName = tableName;
@@ -102,6 +102,7 @@ export class TableSettings {
     this.addDataMethod = dataInteractionSettings.addSettings.addDataMethod;
     this.newDataItem = dataInteractionSettings.addSettings.newDataItem;
     this.addButton = dataInteractionSettings.addSettings.addButton;
+    this.addRoute = dataInteractionSettings.addSettings.addRoute;
     //Data Interaction Settings - Delete:
     this.allowDeleteData = signal(dataInteractionSettings.deleteSettings.allowDeleteData);
     this.notifyOfDeleteBy = dataInteractionSettings.deleteSettings.notifyOfDeleteBy;
@@ -129,7 +130,7 @@ export class TableSettings {
     return new FormControl(defaultValue)
   }
 
-  private createTableColumns(columns: ITableColumn[], filterType: 'column' | 'simple') {
+  private createTableColumns(columns: IDynamicMatTableColumn[], filterType: 'column' | 'simple') {
     return columns.map(column => {
       let tableColumn = column;
       this.columnDef.push(column.columnDataName);
@@ -172,7 +173,6 @@ export class TableSettings {
         editable: false,
         colClass: {'action-column': true},
         allowMassUpdate: false,
-        formField: undefined,
         isLink: false,
       }));
     }
@@ -194,7 +194,6 @@ export class TableSettings {
         editable: false,
         colClass: {'selection-column': true},
         allowMassUpdate: false,
-        formField: undefined,
         isLink: false,
       })
     );
@@ -215,7 +214,6 @@ export class TableSettings {
         filterable: false,
         editable: false,
         allowMassUpdate: false,
-        formField: undefined,
         isLink: false,
       })
     );
