@@ -2,15 +2,15 @@
   "name": "dynamic-mat-table",
   "version": "0.0.1",
   "peerDependencies": {
-    "@angular/common": "^17.0.8",
-    "@angular/core": "^17.0.8",
-    "@ionic/angular": "^7.5.1"
+    "@angular/common": "^18.0.3",
+    "@angular/core": "^18.0.3",
+    "@ionic/angular": "^8.2.2"
   },
   "dependencies": {
     "tslib": "^2.3.0"
   },
   "sideEffects": false,
   "devDependencies": {
-    "@ionic/angular": "^7.5.1"
+    "@ionic/angular": "^8.2.2"
   }
 }
